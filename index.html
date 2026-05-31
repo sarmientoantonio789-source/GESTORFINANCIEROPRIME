@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Asesor Financiero · PRIME Grupo Inmobiliario</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- [1] Inter (modern sans) + Cormorant Garamond (display/serif) -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  /* ══ DESIGN TOKENS ══════════════════════════════════════════════ */
+  :root {
+    --navy:      #0d2341;
+    --navy-mid:  #183455;
+    --navy-light:#1e4280;
+    --gold:      #c9a84c;
+    --gold-light:#e4c36a;
+    --gold-pale: #f7edcd;
+    --cream:     #fafaf7;
+    --gray-soft: #f1f2f4;
+    --text-main: #1a2332;
+    --text-muted:#6b7a8d;
+  }
+  * { box-sizing: border-box; }
+
+  /* [1] Inter como fuente global — moderna y legible */
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+    min-height: 100vh;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: 'Cormorant Garamond', serif; }
+
+  /* ── Screens ─────────────────────────────────────────────────── */
+  .screen { display: none; animation: fadeIn .28s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(7px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Top bar ─────────────────────────────────────────────────── */
+  .top-bar {
+    background: var(--navy);
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: 0 2px 16px rgba(13,35,65,.35);
+  }
+  .top-bar .logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold);
+    font-size: 1.25rem; font-weight: 700; letter-spacing: .04em;
+  }
+  .top-bar .logo-sub {
+    color: #8faac5; font-size: .62rem;
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  .btn-home {
+    background: rgba(201,168,76,.13);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Inter', sans-serif;
+    font-size: .75rem; font-weight: 600;
+    padding: 6px 13px; border-radius: 6px;
+    cursor: pointer; letter-spacing: .03em;
+    transition: background .2s;
+  }
+  .btn-home:hover { background: rgba(201,168,76,.26); }
+
+  /* ── Home hero ───────────────────────────────────────────────── */
+  .home-hero {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #1a3a6e 100%);
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .home-hero .badge {
+    display: inline-block;
+    background: rgba(201,168,76,.16);
+    border: 1px solid rgba(201,168,76,.38);
+    color: var(--gold-light);
+    font-size: .67rem; letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 4px 14px; border-radius: 20px; margin-bottom: 16px;
+  }
+  /* [1] Título: "Asesor Financiero" blanco, "PRIME" dorado */
+  .home-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    color: #ffffff;            /* texto base: blanco puro */
+    margin: 0 0 6px;
+    line-height: 1.1;
+  }
+  .home-hero h1 .gold { color: var(--gold); } /* "PRIME" en dorado */
+  .home-hero p { color: #8faac5; font-size: .88rem; margin: 0; }
+
+  /* ── Route buttons ───────────────────────────────────────────── */
+  .route-btn {
+    display: flex; align-items: center; gap: 16px;
+    background: #fff; border: 1px solid #e2e7ef;
+    border-radius: 14px; padding: 18px 20px;
+    cursor: pointer; text-align: left; width: 100%;
+    box-shadow: 0 2px 8px rgba(13,35,65,.06);
+    position: relative; overflow: hidden;
+    transition: all .2s;
+  }
+  .route-btn::after {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--gold);
+    border-radius: 4px 0 0 4px; opacity: 0;
+    transition: opacity .2s;
+  }
+  .route-btn:hover { border-color: var(--gold); box-shadow: 0 6px 20px rgba(13,35,65,.12); transform: translateY(-1px); }
+  .route-btn:hover::after { opacity: 1; }
+  .route-icon {
+    width: 52px; height: 52px; background: var(--gold-pale);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+  }
+  .route-btn-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-weight: 700; color: var(--navy);
+  }
+  .route-btn-sub { font-size: .76rem; color: var(--text-muted); margin-top: 2px; }
+  .route-arrow { margin-left: auto; color: var(--gold); font-size: 1.2rem; }
+
+  /* ── Step indicators ─────────────────────────────────────────── */
+  .steps-bar {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 18px 20px 0;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .73rem; font-weight: 700;
+    transition: all .3s;
+  }
+  .step-dot.done    { background: var(--navy); color: #fff; }
+  .step-dot.active  { background: var(--gold); color: var(--navy); box-shadow: 0 0 0 3px rgba(201,168,76,.25); }
+  .step-dot.pending { background: #e2e7ef; color: var(--text-muted); }
+  .step-line { flex: 1; max-width: 40px; height: 2px; background: #e2e7ef; border-radius: 2px; }
+  .step-line.done { background: var(--navy); }
+
+  /* ── Section headings ────────────────────────────────────────── */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--navy); margin: 0 0 4px;
+  }
+  .section-sub { font-size: .81rem; color: var(--text-muted); margin: 0 0 20px; }
+
+  /* ── Bank grid ───────────────────────────────────────────────── */
+  .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .bank-btn {
+    background: #fff; border: 2px solid #e2e7ef;
+    border-radius: 12px; padding: 16px 12px;
+    cursor: pointer; text-align: center;
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: .81rem; color: var(--navy);
+    transition: all .2s;
+  }
+  .bank-btn:hover  { border-color: var(--gold); background: var(--gold-pale); }
+  .bank-btn.selected { border-color: var(--navy); background: var(--navy); color: #fff; }
+  .bank-btn .bank-emoji { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+
+  /* ── Form fields ─────────────────────────────────────────────── */
+  .field-label {
+    font-size: .72rem; font-weight: 700;
+    color: var(--navy-mid);
+    letter-spacing: .05em; text-transform: uppercase;
+    display: block; margin-bottom: 5px;
+  }
+  /* [2] Inputs de dinero: texto con separadores (tipo text) */
+  .field-input {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid #d8dfe8; border-radius: 9px;
+    font-family: 'Inter', sans-serif;
+    font-size: .95rem; color: var(--text-main);
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    /* [1] Números tabulares en inputs */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  .field-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,.15); }
+  .field-hint { font-size: .71rem; color: var(--text-muted); margin-top: 3px; }
+  .field-group { margin-bottom: 16px; }
+
+  /* Conversor de divisas */
+  .currency-box {
+    background: #f4f7fb;
+    border: 1px solid #dde4ef;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .currency-box-title {
+    font-size: .7rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--navy); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .currency-connector {
+    display: flex; align-items: center;
+    justify-content: center; gap: 10px;
+    margin: 6px 0;
+    font-size: .75rem; color: var(--text-muted);
+    font-weight: 600;
+  }
+  .currency-connector span { 
+    background: var(--gold-pale); border: 1px solid var(--gold);
+    border-radius: 6px; padding: 3px 10px;
+    color: var(--navy); font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────── */
+  .btn-primary {
+    background: var(--navy); color: #fff; border: none;
+    border-radius: 10px; padding: 14px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: .93rem; font-weight: 600;
+    cursor: pointer; width: 100%; letter-spacing: .02em;
+    transition: background .2s, transform .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .btn-gold {
+    background: var(--gold); color: var(--navy); border: none;
+    border-radius: 10px; padding: 14px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: .93rem; font-weight: 700;
+    cursor: pointer; width: 100%; letter-spacing: .02em;
+    transition: background .2s, transform .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; border: 1.5px solid var(--navy);
+    color: var(--navy); border-radius: 10px; padding: 12px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: .88rem; font-weight: 600;
+    cursor: pointer; width: 100%; transition: all .2s;
+  }
+  .btn-outline:hover { background: var(--navy); color: #fff; }
+
+  /* ── Result cards ────────────────────────────────────────────── */
+  .result-card {
+    background: #fff; border: 1px solid #e2e7ef;
+    border-radius: 14px; padding: 16px 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(13,35,65,.05);
+  }
+  .result-card.highlight {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: #fff; border: none;
+  }
+  .result-card.gold-card {
+    background: linear-gradient(135deg, var(--gold) 0%, #b8922e 100%);
+    color: var(--navy); border: none;
+  }
+  .result-label {
+    font-size: .68rem; letter-spacing: .1em;
+    text-transform: uppercase; font-weight: 700; opacity: .7;
+    margin-bottom: 5px;
+    font-family: 'Inter', sans-serif;
+  }
+  /* [1][5] Valores numéricos: Inter + tabular-nums. Sin Cormorant para cifras */
+  .result-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.65rem; font-weight: 700; line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -.01em;
+  }
+  .result-value.sm { font-size: 1.18rem; }
+
+  /* ── Summary row inside result-card ─────────────────────────── */
+  .sum-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 5px 0; border-bottom: 1px solid #f0f2f5;
+  }
+  .sum-row:last-child { border-bottom: none; }
+  .sum-row .sum-label { font-size: .83rem; color: var(--text-muted); }
+  .sum-row .sum-val {
+    font-weight: 600; font-size: .88rem;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* ── Data table ──────────────────────────────────────────────── */
+  .tabla-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e7ef; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: .77rem;
+    font-family: 'Inter', sans-serif;
+  }
+  thead { background: var(--navy); color: #fff; }
+  thead th {
+    padding: 10px 8px; font-weight: 600;
+    letter-spacing: .03em; white-space: nowrap;
+    font-size: .72rem;
+  }
+  tbody tr:nth-child(even) { background: #f7f9fc; }
+  tbody tr:hover { background: var(--gold-pale); }
+  td {
+    padding: 7px 8px; text-align: right;
+    color: var(--text-main);
+    border-bottom: 1px solid #eef0f5;
+    /* [1] Números tabulares en tabla */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  td:first-child { text-align: center; font-weight: 700; color: var(--navy); }
+
+  /* ── Misc ────────────────────────────────────────────────────── */
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, #d8dfe8, transparent); margin: 20px 0; }
+  .check-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+  .check-row input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--navy); cursor: pointer; }
+  .check-row label { font-size: .88rem; cursor: pointer; }
+  .msg-comercial {
+    background: var(--gold-pale); border-left: 4px solid var(--gold);
+    border-radius: 0 10px 10px 0; padding: 16px;
+    font-size: .88rem; line-height: 1.65; color: var(--text-main);
+  }
+  .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .content-pad { padding: 20px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #f1f2f4; }
+  ::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 3px; }
+
+  /* PDF se construye con CSS inline en memoria — no requiere estilos de hoja */
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ SCREEN: HOME ════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-hero">
+    <div class="badge">Herramienta Interna · Uso Exclusivo Asesores</div>
+    <!-- [1] "Asesor Financiero" blanco, "PRIME" dorado -->
+    <h1>Asesor Financiero<br/><span class="gold">PRIME</span></h1>
+    <p>Simulaciones al instante · Reportes profesionales</p>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:14px;">Selecciona el tipo de operación</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <button class="route-btn" onclick="goTo('r1-step1')">
+        <div class="route-icon">🏠</div>
+        <div>
+          <div class="route-btn-title">Crédito Hipotecario</div>
+          <div class="route-btn-sub">Simulación con banco, cuota inicial y cronograma</div>
+        </div>
+        <div class="route-arrow">›</div>
+      </button>
+      <button class="route-btn" onclick="goTo('r2-step1')">
+        <div class="route-icon">💰</div>
+        <div>
+          <div class="route-btn-title">Contado + Crédito Consumo</div>
+          <div class="route-btn-sub">Saldo faltante financiado con préstamo personal</div>
+        </div>
+        <div class="route-arrow">›</div>
+      </button>
+      <button class="route-btn" onclick="goTo('r3')">
+        <div class="route-icon">📑</div>
+        <div>
+          <div class="route-btn-title">Compra al Contado Puro</div>
+          <div class="route-btn-sub">Liquidación de gastos notariales y tributarios</div>
+        </div>
+        <div class="route-arrow">›</div>
+      </button>
+    </div>
+    <div style="margin-top:28px;padding:14px;background:var(--gold-pale);border-radius:10px;border:1px solid rgba(201,168,76,.3);">
+      <p style="font-size:.74rem;color:#7a6020;margin:0;line-height:1.5;">
+        <strong>UIT 2026:</strong> S/ 5,150 &nbsp;·&nbsp; Versión para uso exclusivo del equipo comercial PRIME Grupo Inmobiliario.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 1 · STEP 1 — Banco ════════════════════════ -->
+<div id="screen-r1-step1" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot active">1</div><div class="step-line"></div>
+    <div class="step-dot pending">2</div><div class="step-line"></div>
+    <div class="step-dot pending">3</div>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Crédito Hipotecario</p>
+    <p class="section-sub">Paso 1 de 3 · Selecciona la entidad financiera</p>
+    <div class="bank-grid" id="r1-bank-grid"></div>
+    <div style="margin-top:20px;">
+      <button class="btn-primary" id="r1-btn-next1" onclick="r1Next1()" disabled>Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 1 · STEP 2 — Formulario ════════════════════════ -->
+<div id="screen-r1-step2" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot active">2</div><div class="step-line"></div>
+    <div class="step-dot pending">3</div>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Datos del Préstamo</p>
+    <p class="section-sub" id="r1-step2-sub">Paso 2 de 3 · Verifica y ajusta los valores</p>
+
+    <!-- [4] Conversor de divisas USD ↔ SOL -->
+    <div class="currency-box">
+      <div class="currency-box-title">💱 Conversor de Divisas (opcional)</div>
+      <div class="two-cols">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Precio en USD ($)</label>
+          <input class="field-input" type="text" id="r1-precio-usd"
+                 placeholder="Ej: 35,000.00"
+                 oninput="usdToSol()"
+                 inputmode="decimal"/>
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Tipo de Cambio (S/ x $)</label>
+          <input class="field-input" type="text" id="r1-tipo-cambio"
+                 value="3.50"
+                 oninput="usdToSol()"
+                 inputmode="decimal"
+                 style="font-variant-numeric:tabular-nums;"/>
+        </div>
+      </div>
+      <div class="currency-connector">
+        <span id="r1-tc-display">TC: 3.50</span>
+        USD × TC = SOL
+      </div>
+    </div>
+
+    <!-- [3] "Precio de la propiedad" (antes "Precio del Lote") -->
+    <div class="field-group">
+      <label class="field-label">Precio de la Propiedad (S/)</label>
+      <input class="field-input" type="text" id="r1-precio"
+             placeholder="Ej: 120,000.00"
+             oninput="solToUsd(); formatMoney(this)"
+             inputmode="decimal"/>
+      <div class="field-hint">Puedes ingresar directamente en soles o usar el conversor USD arriba</div>
+    </div>
+
+    <div class="two-cols">
+      <div class="field-group">
+        <label class="field-label">% Cuota Inicial</label>
+        <input class="field-input" type="number" id="r1-pct-inicial"
+               placeholder="Ej: 20" min="0" max="100" step="0.5"/>
+        <div class="field-hint">Porcentaje sobre el precio</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Plazo (Años)</label>
+        <input class="field-input" type="number" id="r1-plazo"
+               placeholder="Ej: 20" min="1" max="30"/>
+      </div>
+    </div>
+    <div class="two-cols">
+      <div class="field-group">
+        <label class="field-label">TEA (%)</label>
+        <input class="field-input" type="number" id="r1-tea"
+               step="0.01" placeholder="Ej: 10.50"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Seg. Desgravamen (% mens.)</label>
+        <input class="field-input" type="number" id="r1-seg-desg"
+               step="0.001" placeholder="Ej: 0.050"/>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Seg. Inmueble (% mens. sobre saldo)</label>
+      <input class="field-input" type="number" id="r1-seg-inm"
+             step="0.001" placeholder="Ej: 0.028"/>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn-outline" onclick="goTo('r1-step1')" style="width:auto;padding:12px 20px;">← Atrás</button>
+      <button class="btn-primary" onclick="r1Calcular()">Calcular →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 1 · STEP 3 — Resultados ════════════════════════ -->
+<div id="screen-r1-step3" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot active">3</div>
+  </div>
+  <div class="content-pad" style="max-width:600px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Resultados · Crédito Hipotecario</p>
+    <p class="section-sub">Simulación generada al instante</p>
+
+    <!-- Fila 1: inicial + préstamo -->
+    <div class="two-cols" style="margin-bottom:10px;">
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Cuota Inicial</div>
+        <div class="result-value sm" id="r1-res-inicial">—</div>
+      </div>
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Monto Préstamo</div>
+        <div class="result-value sm" id="r1-res-prestamo">—</div>
+      </div>
+    </div>
+
+    <!-- [5] Cuota 1° mes / Cuota último mes — ultra limpio -->
+    <div class="two-cols" style="margin-bottom:10px;">
+      <div class="result-card highlight" style="margin-bottom:0;">
+        <div class="result-label" style="color:rgba(255,255,255,.65);">Cuota 1° Mes</div>
+        <div class="result-value" id="r1-res-cuota1" style="color:#fff;">—</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-top:5px;letter-spacing:.04em;">Amortiz. + Interés + Seguros</div>
+      </div>
+      <div class="result-card gold-card" style="margin-bottom:0;">
+        <div class="result-label">Cuota Último Mes</div>
+        <div class="result-value" id="r1-res-cuotaN">—</div>
+        <div style="font-size:.65rem;color:rgba(13,35,65,.55);margin-top:5px;letter-spacing:.04em;">Saldo deudor mínimo</div>
+      </div>
+    </div>
+
+    <!-- [5] Total pagado -->
+    <div class="result-card" style="margin-bottom:14px;border-left:4px solid var(--navy);">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div class="result-label">Total Pagado (con seguros)</div>
+          <div style="font-size:.71rem;color:var(--text-muted);margin-top:2px;">Costo total absoluto al vencimiento del crédito</div>
+        </div>
+        <div class="result-value sm" id="r1-res-total" style="text-align:right;">—</div>
+      </div>
+    </div>
+
+    <p style="font-weight:700;font-size:.76rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">Cronograma de Pagos</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mes</th><th>Saldo Inicial</th><th>Amortización</th>
+            <th>Interés</th><th>Seg. Desgrav.</th><th>Seg. Inm.</th>
+            <th>Cuota Total</th><th>Saldo Final</th>
+          </tr>
+        </thead>
+        <tbody id="r1-tabla-body"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+      <button class="btn-gold" onclick="descargarPDF('hipotecario')">⬇ Descargar Reporte PDF</button>
+      <button class="btn-outline" onclick="goTo('r1-step2')">← Modificar datos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 2 · STEP 1 — Banco ════════════════════════ -->
+<div id="screen-r2-step1" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot active">1</div><div class="step-line"></div>
+    <div class="step-dot pending">2</div><div class="step-line"></div>
+    <div class="step-dot pending">3</div>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Contado + Crédito Consumo</p>
+    <p class="section-sub">Paso 1 de 3 · Selecciona la entidad para el préstamo</p>
+    <div class="bank-grid" id="r2-bank-grid"></div>
+    <div style="margin-top:20px;">
+      <button class="btn-primary" id="r2-btn-next1" onclick="r2Next1()" disabled>Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 2 · STEP 2 — Formulario ════════════════════════ -->
+<div id="screen-r2-step2" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot active">2</div><div class="step-line"></div>
+    <div class="step-dot pending">3</div>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Datos del Cliente</p>
+    <p class="section-sub" id="r2-step2-sub">Paso 2 de 3 · Ingresa los datos de la operación</p>
+
+    <!-- Conversor Precio Propiedad USD ↔ SOL -->
+    <div class="currency-box">
+      <div class="currency-box-title">💱 Conversor Precio Propiedad (opcional)</div>
+      <div class="two-cols">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Precio en USD ($)</label>
+          <input class="field-input" type="text" id="r2-precio-usd"
+                 placeholder="Ej: 22,000.00"
+                 oninput="r2UsdPrecioToSol()"
+                 inputmode="decimal"/>
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Tipo de Cambio (S/ x $)</label>
+          <input class="field-input" type="text" id="r2-tipo-cambio"
+                 value="3.50"
+                 oninput="r2SyncTC()"
+                 inputmode="decimal"/>
+        </div>
+      </div>
+      <div class="currency-connector">
+        <span id="r2-tc-display">TC: 3.50</span>
+        USD × TC = SOL
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Precio de la Propiedad (S/)</label>
+      <input class="field-input" type="text" id="r2-precio"
+             placeholder="Ej: 80,000.00"
+             oninput="formatMoney(this); r2SolPrecioToUsd()"
+             inputmode="decimal"/>
+    </div>
+
+    <!-- Conversor Efectivo USD ↔ SOL -->
+    <div class="currency-box">
+      <div class="currency-box-title">💱 Conversor Efectivo del Comprador (opcional)</div>
+      <div class="field-group" style="margin-bottom:0;">
+        <label class="field-label">Efectivo disponible en USD ($)</label>
+        <input class="field-input" type="text" id="r2-efectivo-usd"
+               placeholder="Ej: 8,000.00"
+               oninput="r2UsdEfectivoToSol()"
+               inputmode="decimal"/>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Efectivo disponible del Comprador (S/)</label>
+      <input class="field-input" type="text" id="r2-efectivo"
+             placeholder="Ej: 30,000.00"
+             oninput="formatMoney(this); r2SolEfectivoToUsd()"
+             inputmode="decimal"/>
+      <div class="field-hint">Monto que tiene ahorrado o puede pagar al contado</div>
+    </div>
+
+    <div class="two-cols">
+      <div class="field-group">
+        <label class="field-label">Plazo (Meses)</label>
+        <input class="field-input" type="number" id="r2-plazo"
+               placeholder="Ej: 36" min="1" max="84"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">TEA Préstamo (%)</label>
+        <input class="field-input" type="number" id="r2-tea"
+               step="0.01" placeholder="Ej: 18.00"/>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button class="btn-outline" onclick="goTo('r2-step1')" style="width:auto;padding:12px 20px;">← Atrás</button>
+      <button class="btn-primary" onclick="r2Calcular()">Calcular →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 2 · STEP 3 — Resultados ════════════════════════ -->
+<div id="screen-r2-step3" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="steps-bar">
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot done">✓</div><div class="step-line done"></div>
+    <div class="step-dot active">3</div>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;">
+    <p class="section-title" style="margin-top:12px;">Resultados · Contado + Consumo</p>
+    <p class="section-sub">Simulación generada al instante</p>
+
+    <div class="two-cols" style="margin-bottom:10px;">
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Precio Propiedad</div>
+        <div class="result-value sm" id="r2-res-precio">—</div>
+      </div>
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Efectivo Cliente</div>
+        <div class="result-value sm" id="r2-res-efectivo">—</div>
+      </div>
+    </div>
+    <div class="result-card highlight" style="margin-bottom:10px;">
+      <div class="result-label" style="color:rgba(255,255,255,.65);">Monto a Financiar (Saldo Faltante)</div>
+      <div class="result-value" id="r2-res-faltante" style="color:#fff;">—</div>
+    </div>
+    <div class="result-card gold-card" style="margin-bottom:10px;">
+      <div class="result-label">Cuota Mensual Fija</div>
+      <div class="result-value" id="r2-res-cuota">—</div>
+    </div>
+    <div class="two-cols" style="margin-bottom:14px;">
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Total a Devolver</div>
+        <div class="result-value sm" id="r2-res-total">—</div>
+      </div>
+      <div class="result-card" style="margin-bottom:0;">
+        <div class="result-label">Costo Financiero</div>
+        <div class="result-value sm" id="r2-res-interes">—</div>
+      </div>
+    </div>
+
+    <p style="font-weight:700;font-size:.76rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">Mensaje Comercial de Cierre</p>
+    <div class="msg-comercial" id="r2-msg-comercial"></div>
+
+    <div class="divider"></div>
+    <p style="font-weight:700;font-size:.76rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">Cronograma de Amortización</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mes</th><th>Saldo Inicial</th><th>Amortización</th>
+            <th>Interés</th><th>Cuota Fija</th><th>Saldo Final</th>
+          </tr>
+        </thead>
+        <tbody id="r2-tabla-body"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px;">
+      <button class="btn-gold" onclick="descargarPDF('consumo')">⬇ Descargar Reporte PDF</button>
+      <button class="btn-outline" onclick="goTo('r2-step2')">← Modificar datos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ RUTA 3 — Contado Puro ════════════════════════ -->
+<div id="screen-r3" class="screen">
+  <div class="top-bar">
+    <div><div class="logo-text">PRIME</div><div class="logo-sub">Grupo Inmobiliario</div></div>
+    <button class="btn-home" onclick="goHome()">← Inicio</button>
+  </div>
+  <div class="content-pad" style="max-width:520px;margin:0 auto;padding-top:24px;">
+    <p class="section-title">Compra al Contado Puro</p>
+    <p class="section-sub">Ingresa los datos para liquidar todos los gastos</p>
+
+    <!-- Conversor Precio USD ↔ SOL -->
+    <div class="currency-box">
+      <div class="currency-box-title">💱 Conversor de Precio (opcional)</div>
+      <div class="two-cols">
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Precio en USD ($)</label>
+          <input class="field-input" type="text" id="r3-precio-usd"
+                 placeholder="Ej: 27,000.00"
+                 oninput="r3UsdToSol()"
+                 inputmode="decimal"/>
+        </div>
+        <div class="field-group" style="margin-bottom:0;">
+          <label class="field-label">Tipo de Cambio (S/ x $)</label>
+          <input class="field-input" type="text" id="r3-tipo-cambio"
+                 value="3.50"
+                 oninput="r3SyncTC()"
+                 inputmode="decimal"/>
+        </div>
+      </div>
+      <div class="currency-connector">
+        <span id="r3-tc-display">TC: 3.50</span>
+        USD × TC = SOL
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Precio Real de Venta (S/)</label>
+      <input class="field-input" type="text" id="r3-precio-real"
+             placeholder="Ej: 95,000.00"
+             oninput="formatMoney(this); r3SolToUsd(); r3Calcular()"
+             inputmode="decimal"/>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Monto a Declarar en Notaría (S/)</label>
+      <input class="field-input" type="text" id="r3-precio-notaria"
+             placeholder="Ej: 80,000.00"
+             oninput="formatMoney(this); r3Calcular()"
+             inputmode="decimal"/>
+      <div class="field-hint">Base para impuestos. Puede diferir del precio real.</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Gastos Notariales de Escritura (S/)</label>
+      <input class="field-input" type="text" id="r3-gastos-not"
+             placeholder="Ej: 800.00"
+             oninput="formatMoney(this); r3Calcular()"
+             inputmode="decimal"/>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-weight:700;font-size:.75rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:14px;">Impuestos y Derechos</p>
+
+    <div class="two-cols">
+      <div class="field-group">
+        <label class="field-label">% Imp. Renta (Vendedor)</label>
+        <input class="field-input" type="number" id="r3-tasa-renta"
+               value="5" step="0.01" oninput="r3Calcular()"/>
+        <div class="field-hint">Por defecto 5% sobre monto notaría</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">% Alcabala (Comprador)</label>
+        <input class="field-input" type="number" id="r3-tasa-alcabala"
+               value="3" step="0.01" oninput="r3Calcular()"/>
+        <div class="field-hint">Sobre exceso de 10 UIT (S/ 51,500)</div>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Tasa SUNARP — Calificación (editable)</label>
+      <input class="field-input" type="number" id="r3-tasa-sunarp"
+             value="0.0015" step="0.0001" oninput="r3Calcular()"/>
+      <div class="field-hint">Fórmula: (Monto Notaría × tasa) + S/ 38.00</div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-weight:700;font-size:.75rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;">Gastos Adicionales</p>
+
+    <div class="check-row">
+      <input type="checkbox" id="r3-chk-cri" onchange="r3ToggleCRI()"/>
+      <label for="r3-chk-cri">CRI / Copia Literal (Vendedor)</label>
+    </div>
+    <div id="r3-cri-field" style="display:none;padding-left:28px;margin-bottom:8px;">
+      <div class="field-group">
+        <label class="field-label">Costo CRI (S/)</label>
+        <input class="field-input" type="number" id="r3-cri-monto" value="40" oninput="r3Calcular()"/>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-weight:700;font-size:.75rem;color:var(--navy);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;">Checklist de Documentos</p>
+    <div class="check-row"><input type="checkbox" id="r3-chk-predial"/><label for="r3-chk-predial">¿Predial y Arbitrios al día?</label></div>
+    <div class="check-row"><input type="checkbox" id="r3-chk-partida"/><label for="r3-chk-partida">¿Partida registral verificada?</label></div>
+    <div class="check-row"><input type="checkbox" id="r3-chk-cargas"/><label for="r3-chk-cargas">¿Sin cargas ni gravámenes?</label></div>
+
+    <!-- RESULTADOS RUTA 3 -->
+    <div id="r3-resultados" style="display:none;margin-top:20px;">
+      <div class="divider"></div>
+      <p class="section-title">Resumen de la Operación</p>
+
+      <!-- ── BLOQUE COMPRADOR ── -->
+      <p style="font-size:.73rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">📦 Inversión Total del Comprador</p>
+      <div class="result-card" style="margin-bottom:8px;">
+        <div class="sum-row"><span class="sum-label">Precio Real de la Propiedad</span><span class="sum-val" id="r3-disp-precio-real">—</span></div>
+        <div class="sum-row"><span class="sum-label">Alcabala</span><span class="sum-val" id="r3-disp-alcabala">—</span></div>
+        <div class="sum-row"><span class="sum-label">Gastos Notariales</span><span class="sum-val" id="r3-disp-not">—</span></div>
+        <div class="sum-row"><span class="sum-label">Derechos SUNARP</span><span class="sum-val" id="r3-disp-sunarp">—</span></div>
+      </div>
+      <div class="result-card highlight" style="margin-bottom:0;">
+        <div class="result-label" style="color:rgba(255,255,255,.65);">TOTAL INVERSIÓN COMPRADOR</div>
+        <div class="result-value" id="r3-res-comprador" style="color:#fff;">—</div>
+      </div>
+
+      <!-- ── SEPARADOR FÍSICO entre bloques ── -->
+      <div style="border:2px dashed #c9a84c;border-radius:0;margin:18px 0;position:relative;">
+        <span style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 10px;font-size:.68rem;font-weight:700;letter-spacing:.1em;color:#c9a84c;text-transform:uppercase;white-space:nowrap;">· · · Partes de la transacción · · ·</span>
+      </div>
+
+      <!-- ── BLOQUE VENDEDOR ── -->
+      <p style="font-size:.73rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">💵 Neto a Recibir por el Vendedor</p>
+      <div class="result-card" style="margin-bottom:8px;">
+        <div class="sum-row"><span class="sum-label">Precio Real de la Propiedad</span><span class="sum-val" id="r3-disp-precio-real2">—</span></div>
+        <div class="sum-row"><span class="sum-label">Monto fuera de Notaría</span><span class="sum-val" id="r3-disp-fuera-notaria">—</span></div>
+        <div class="sum-row"><span class="sum-label">(−) Imp. a la Renta (Vendedor)</span><span class="sum-val" id="r3-disp-renta">—</span></div>
+        <div class="sum-row" id="r3-fila-cri" style="display:none;"><span class="sum-label">(−) CRI / Copia Literal</span><span class="sum-val" id="r3-disp-cri">—</span></div>
+      </div>
+      <div class="result-card gold-card" style="margin-bottom:16px;">
+        <div class="result-label">NETO VENDEDOR</div>
+        <div class="result-value" id="r3-res-vendedor">—</div>
+      </div>
+
+      <button class="btn-gold" onclick="descargarPDF('contado')">⬇ Descargar Reporte PDF</button>
+    </div>
+    <div style="height:40px;"></div>
+  </div>
+</div>
+
+<!-- PDF se construye en memoria — no necesita template en DOM -->
+
+<!-- ════════════════════════════════════ JAVASCRIPT ════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════════════════
+//  BASE DE DATOS CENTRAL — El administrador edita aquí
+// ═══════════════════════════════════════════════════════
+const UIT = 5150; // UIT vigente 2026
+
+const DATA_BANCOS = {
+  "Caja Cusco":    { emoji:"🏦", tea:12.50, segDesgravamen:0.050, segInmueble:0.028, inicialMinPct:20 },
+  "Caja Arequipa": { emoji:"🏛️", tea:11.80, segDesgravamen:0.045, segInmueble:0.030, inicialMinPct:20 },
+  "BCP":           { emoji:"🔵", tea:10.50, segDesgravamen:0.038, segInmueble:0.025, inicialMinPct:20 },
+  "BBVA":          { emoji:"🟦", tea:10.20, segDesgravamen:0.040, segInmueble:0.022, inicialMinPct:20 },
+  "Otro Banco":    { emoji:"🏗️", tea:"",    segDesgravamen:"",    segInmueble:"",    inicialMinPct:"" },
+};
+
+// ─── STATE ─────────────────────────────────────────────
+let r1BancoSel   = null;
+let r2BancoSel   = null;
+let r1CronogData = [];
+let r1ResData    = {};
+let r2ResData    = {};
+let r3ResData    = {};
+
+// ═══════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ═══════════════════════════════════════════════════════
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function goHome() { goTo('home'); }
+
+// ═══════════════════════════════════════════════════════
+//  [2] FORMATO DE MILES EN TIEMPO REAL
+//  Inputs de dinero son type="text"; parseamos el raw.
+// ═══════════════════════════════════════════════════════
+function parseMoney(val) {
+  // Elimina todo excepto dígitos y punto decimal
+  return parseFloat(String(val).replace(/,/g, '').replace(/[^0-9.]/g, '')) || 0;
+}
+
+function formatMoney(input) {
+  let raw = input.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+  // Permite un solo punto decimal
+  const parts = raw.split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  input.value = parts.length > 1 ? parts[0] + '.' + parts[1] : parts[0];
+}
+
+// Formateador de salida para display
+function fmt(n) {
+  if (isNaN(n)) return 'S/ —';
+  return 'S/ ' + Number(n).toLocaleString('en-US', {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+function fmtN(n) {
+  return Number(n).toLocaleString('en-US', {
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+function todayStr() {
+  return new Date().toLocaleDateString('es-PE', { year:'numeric', month:'long', day:'numeric' });
+}
+function teaToTem(tea) {
+  return Math.pow(1 + tea / 100, 1 / 12) - 1;
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONVERSORES USD ↔ SOL  (R1, R2 y R3)
+// ═══════════════════════════════════════════════════════
+function _solFmt(n) {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function _tc(id) { return parseMoney(document.getElementById(id).value) || 3.50; }
+
+/* ─── RUTA 1 ─── */
+function usdToSol() {
+  const tc  = _tc('r1-tipo-cambio');
+  document.getElementById('r1-tc-display').textContent = 'TC: ' + tc.toFixed(2);
+  const usd = parseMoney(document.getElementById('r1-precio-usd').value);
+  if (usd > 0) document.getElementById('r1-precio').value = _solFmt(usd * tc);
+}
+function solToUsd() {
+  const tc  = _tc('r1-tipo-cambio');
+  const sol = parseMoney(document.getElementById('r1-precio').value);
+  document.getElementById('r1-precio-usd').value = sol > 0 ? _solFmt(sol / tc) : '';
+}
+
+/* ─── RUTA 2 ─── */
+function r2SyncTC() {
+  const tc = _tc('r2-tipo-cambio');
+  document.getElementById('r2-tc-display').textContent = 'TC: ' + tc.toFixed(2);
+  // re-calcular USD→SOL precio si hay USD
+  const usdP = parseMoney(document.getElementById('r2-precio-usd').value);
+  if (usdP > 0) document.getElementById('r2-precio').value = _solFmt(usdP * tc);
+  const usdE = parseMoney(document.getElementById('r2-efectivo-usd').value);
+  if (usdE > 0) document.getElementById('r2-efectivo').value = _solFmt(usdE * tc);
+}
+function r2UsdPrecioToSol() {
+  const tc  = _tc('r2-tipo-cambio');
+  const usd = parseMoney(document.getElementById('r2-precio-usd').value);
+  if (usd > 0) document.getElementById('r2-precio').value = _solFmt(usd * tc);
+}
+function r2SolPrecioToUsd() {
+  const tc  = _tc('r2-tipo-cambio');
+  const sol = parseMoney(document.getElementById('r2-precio').value);
+  document.getElementById('r2-precio-usd').value = sol > 0 ? _solFmt(sol / tc) : '';
+}
+function r2UsdEfectivoToSol() {
+  const tc  = _tc('r2-tipo-cambio');
+  const usd = parseMoney(document.getElementById('r2-efectivo-usd').value);
+  if (usd > 0) document.getElementById('r2-efectivo').value = _solFmt(usd * tc);
+}
+function r2SolEfectivoToUsd() {
+  const tc  = _tc('r2-tipo-cambio');
+  const sol = parseMoney(document.getElementById('r2-efectivo').value);
+  document.getElementById('r2-efectivo-usd').value = sol > 0 ? _solFmt(sol / tc) : '';
+}
+
+/* ─── RUTA 3 ─── */
+function r3SyncTC() {
+  const tc = _tc('r3-tipo-cambio');
+  document.getElementById('r3-tc-display').textContent = 'TC: ' + tc.toFixed(2);
+  const usd = parseMoney(document.getElementById('r3-precio-usd').value);
+  if (usd > 0) { document.getElementById('r3-precio-real').value = _solFmt(usd * tc); r3Calcular(); }
+}
+function r3UsdToSol() {
+  const tc  = _tc('r3-tipo-cambio');
+  const usd = parseMoney(document.getElementById('r3-precio-usd').value);
+  if (usd > 0) { document.getElementById('r3-precio-real').value = _solFmt(usd * tc); r3Calcular(); }
+}
+function r3SolToUsd() {
+  const tc  = _tc('r3-tipo-cambio');
+  const sol = parseMoney(document.getElementById('r3-precio-real').value);
+  document.getElementById('r3-precio-usd').value = sol > 0 ? _solFmt(sol / tc) : '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  BANCO GRIDS
+// ═══════════════════════════════════════════════════════
+function buildBankGrid(containerId, routeId) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  Object.keys(DATA_BANCOS).forEach(nombre => {
+    const banco = DATA_BANCOS[nombre];
+    const btn   = document.createElement('button');
+    btn.className = 'bank-btn';
+    btn.innerHTML = `<span class="bank-emoji">${banco.emoji}</span>${nombre}`;
+    btn.onclick   = () => selectBank(routeId, nombre, btn, containerId);
+    c.appendChild(btn);
+  });
+}
+
+function selectBank(route, nombre, btn, containerId) {
+  document.querySelectorAll(`#${containerId} .bank-btn`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (route === 'r1') {
+    r1BancoSel = nombre;
+    document.getElementById('r1-btn-next1').disabled = false;
+  } else {
+    r2BancoSel = nombre;
+    document.getElementById('r2-btn-next1').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RUTA 1 — CRÉDITO HIPOTECARIO
+// ═══════════════════════════════════════════════════════
+function r1Next1() {
+  if (!r1BancoSel) return;
+  const b = DATA_BANCOS[r1BancoSel];
+  document.getElementById('r1-step2-sub').textContent = `Paso 2 de 3 · Datos para ${r1BancoSel}`;
+  document.getElementById('r1-tea').value         = b.tea;
+  document.getElementById('r1-seg-desg').value    = b.segDesgravamen;
+  document.getElementById('r1-seg-inm').value     = b.segInmueble;
+  document.getElementById('r1-pct-inicial').value = b.inicialMinPct;
+  goTo('r1-step2');
+}
+
+function r1Calcular() {
+  const precio     = parseMoney(document.getElementById('r1-precio').value);
+  const pctInicial = parseFloat(document.getElementById('r1-pct-inicial').value) || 0;
+  const plazoAnios = parseInt(document.getElementById('r1-plazo').value) || 0;
+  const tea        = parseFloat(document.getElementById('r1-tea').value) || 0;
+  const pctSegDesg = parseFloat(document.getElementById('r1-seg-desg').value) || 0;
+  const pctSegInm  = parseFloat(document.getElementById('r1-seg-inm').value) || 0;
+
+  if (!precio || !plazoAnios || !tea) {
+    alert('Por favor completa todos los campos obligatorios.');
+    return;
+  }
+
+  const mtoInicial = precio * pctInicial / 100;
+  const capital    = precio - mtoInicial;
+  const n          = plazoAnios * 12;
+  const tem        = teaToTem(tea);
+  const amort      = capital / n;   // amortización constante
+
+  let saldo = capital;
+  let totalPagado = 0;
+  const rows = [];
+
+  for (let i = 1; i <= n; i++) {
+    const saldoInicio = saldo;
+    const interes     = saldo * tem;
+    const segDesg     = saldo * (pctSegDesg / 100);
+    const segInm      = saldo * (pctSegInm  / 100);
+    const cuotaTotal  = amort + interes + segDesg + segInm;
+    saldo -= amort;
+    totalPagado += cuotaTotal;
+    rows.push({ mes:i, saldoInicio, amort, interes, segDesg, segInm, cuotaTotal, saldoFin: Math.max(saldo, 0) });
+  }
+
+  r1CronogData = rows;
+  r1ResData    = { precio, mtoInicial, capital, plazoAnios, tea, pctSegDesg, pctSegInm, banco: r1BancoSel, totalPagado };
+
+  // — Resultados en pantalla —
+  document.getElementById('r1-res-inicial').textContent  = fmt(mtoInicial);
+  document.getElementById('r1-res-prestamo').textContent = fmt(capital);
+  document.getElementById('r1-res-cuota1').textContent   = fmt(rows[0].cuotaTotal);
+  document.getElementById('r1-res-cuotaN').textContent   = fmt(rows[n - 1].cuotaTotal);
+  document.getElementById('r1-res-total').textContent    = fmt(totalPagado);
+
+  // — Tabla cronograma —
+  const tbody = document.getElementById('r1-tabla-body');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.mes}</td>
+      <td>${fmtN(r.saldoInicio)}</td>
+      <td>${fmtN(r.amort)}</td>
+      <td>${fmtN(r.interes)}</td>
+      <td>${fmtN(r.segDesg)}</td>
+      <td>${fmtN(r.segInm)}</td>
+      <td><strong>${fmtN(r.cuotaTotal)}</strong></td>
+      <td>${fmtN(r.saldoFin)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  goTo('r1-step3');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RUTA 2 — CONTADO + CRÉDITO CONSUMO
+// ═══════════════════════════════════════════════════════
+function r2Next1() {
+  if (!r2BancoSel) return;
+  const b = DATA_BANCOS[r2BancoSel];
+  document.getElementById('r2-step2-sub').textContent = `Paso 2 de 3 · Préstamo con ${r2BancoSel}`;
+  document.getElementById('r2-tea').value = b.tea;
+  goTo('r2-step2');
+}
+
+function r2Calcular() {
+  const precio   = parseMoney(document.getElementById('r2-precio').value);
+  const efectivo = parseMoney(document.getElementById('r2-efectivo').value);
+  const plazo    = parseInt(document.getElementById('r2-plazo').value) || 0;
+  const tea      = parseFloat(document.getElementById('r2-tea').value) || 0;
+
+  if (!precio || !plazo || !tea) {
+    alert('Por favor completa todos los campos.');
+    return;
+  }
+
+  const faltante = precio - efectivo;
+  if (faltante <= 0) {
+    alert('El efectivo disponible cubre el precio total. No se requiere préstamo.');
+    return;
+  }
+
+  const tem   = teaToTem(tea);
+  // Sistema Francés: cuota fija
+  const cuota = faltante * (tem * Math.pow(1 + tem, plazo)) / (Math.pow(1 + tem, plazo) - 1);
+  const total = cuota * plazo;
+  const interes = total - faltante;
+
+  // Cronograma mes a mes
+  let saldo = faltante;
+  const rows = [];
+  for (let i = 1; i <= plazo; i++) {
+    const saldoInicio = saldo;
+    const int_mes     = saldo * tem;
+    const amort_mes   = cuota - int_mes;
+    saldo -= amort_mes;
+    rows.push({ mes: i, saldoInicio, amort: amort_mes, interes: int_mes, cuota, saldoFin: Math.max(saldo, 0) });
+  }
+
+  r2ResData = { precio, efectivo, faltante, plazo, tea, cuota, total, interes, banco: r2BancoSel, rows };
+
+  document.getElementById('r2-res-precio').textContent   = fmt(precio);
+  document.getElementById('r2-res-efectivo').textContent = fmt(efectivo);
+  document.getElementById('r2-res-faltante').textContent = fmt(faltante);
+  document.getElementById('r2-res-cuota').textContent    = fmt(cuota);
+  document.getElementById('r2-res-total').textContent    = fmt(total);
+  document.getElementById('r2-res-interes').textContent  = fmt(interes);
+
+  const plazoPal = plazo === 1 ? '1 mes' : `${plazo} meses`;
+  document.getElementById('r2-msg-comercial').innerHTML = `
+    <strong>✨ Propuesta para el cliente:</strong><br/><br/>
+    "La propiedad tiene un precio de <strong>${fmt(precio)}</strong>. Con el efectivo que dispone
+    (<strong>${fmt(efectivo)}</strong>), el saldo a financiar es únicamente de <strong>${fmt(faltante)}</strong>.
+    A través de <strong>${r2BancoSel}</strong>, podemos estructurar un préstamo de consumo a
+    <strong>${plazoPal}</strong> con una cuota mensual fija de tan solo <strong>${fmt(cuota)}</strong>.
+    Hoy mismo podemos iniciar la evaluación y en pocos días usted podría ser propietario."
+  `;
+
+  // Construir tabla en pantalla
+  const tbody = document.getElementById('r2-tabla-body');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.mes}</td>
+      <td>${fmtN(r.saldoInicio)}</td>
+      <td>${fmtN(r.amort)}</td>
+      <td>${fmtN(r.interes)}</td>
+      <td><strong>${fmtN(r.cuota)}</strong></td>
+      <td>${fmtN(r.saldoFin)}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  goTo('r2-step3');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RUTA 3 — CONTADO PURO
+// ═══════════════════════════════════════════════════════
+function r3ToggleCRI() {
+  const chk = document.getElementById('r3-chk-cri').checked;
+  document.getElementById('r3-cri-field').style.display = chk ? 'block' : 'none';
+  r3Calcular();
+}
+
+function r3Calcular() {
+  const precioReal   = parseMoney(document.getElementById('r3-precio-real').value);
+  const mtoNotaria   = parseMoney(document.getElementById('r3-precio-notaria').value);
+  const gastosNot    = parseMoney(document.getElementById('r3-gastos-not').value);
+  const tasaRenta    = parseFloat(document.getElementById('r3-tasa-renta').value)    || 5;
+  const tasaAlcabala = parseFloat(document.getElementById('r3-tasa-alcabala').value) || 3;
+  const tasaSunarp   = parseFloat(document.getElementById('r3-tasa-sunarp').value)   || 0.0015;
+  const criCheck     = document.getElementById('r3-chk-cri').checked;
+  const criMonto     = criCheck ? (parseFloat(document.getElementById('r3-cri-monto').value) || 0) : 0;
+
+  if (!precioReal || !mtoNotaria) {
+    document.getElementById('r3-resultados').style.display = 'none';
+    return;
+  }
+
+  const fueraNotaria = precioReal - mtoNotaria;
+  const impRenta     = mtoNotaria * tasaRenta / 100;
+  const baseAlcabala = mtoNotaria - (10 * UIT);
+  const impAlcabala  = baseAlcabala > 0 ? baseAlcabala * tasaAlcabala / 100 : 0;
+  const sunarp       = (mtoNotaria * tasaSunarp) + 38;
+  const totalComprador = precioReal + impAlcabala + gastosNot + sunarp;
+  const netoVendedor   = precioReal - impRenta - criMonto;
+
+  r3ResData = { precioReal, mtoNotaria, gastosNot, tasaRenta, tasaAlcabala, tasaSunarp,
+                fueraNotaria, impRenta, impAlcabala, sunarp, totalComprador, netoVendedor,
+                criCheck, criMonto };
+
+  document.getElementById('r3-disp-precio-real').textContent   = fmt(precioReal);
+  document.getElementById('r3-disp-precio-real2').textContent  = fmt(precioReal);
+  document.getElementById('r3-disp-fuera-notaria').textContent = fmt(fueraNotaria);
+  document.getElementById('r3-disp-alcabala').textContent      = fmt(impAlcabala);
+  document.getElementById('r3-disp-not').textContent           = fmt(gastosNot);
+  document.getElementById('r3-disp-sunarp').textContent        = fmt(sunarp);
+  document.getElementById('r3-disp-renta').textContent         = fmt(impRenta);
+  document.getElementById('r3-res-comprador').textContent      = fmt(totalComprador);
+  document.getElementById('r3-res-vendedor').textContent       = fmt(netoVendedor);
+
+  const filaCRI = document.getElementById('r3-fila-cri');
+  if (criCheck) {
+    filaCRI.style.display = 'flex';
+    document.getElementById('r3-disp-cri').textContent = fmt(criMonto);
+  } else {
+    filaCRI.style.display = 'none';
+  }
+
+  document.getElementById('r3-resultados').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+//  PDF — HTML construido EN MEMORIA con CSS inline puro
+//  Sin capturar la pantalla activa. Descarga directa.
+// ═══════════════════════════════════════════════════════
+const DISCLAIMER = 'NOTA IMPORTANTE: El presente documento constituye una simulación de carácter estrictamente informativo y referencial realizada con las condiciones comerciales vigentes a la fecha. Los montos de las cuotas, tasas de interés y seguros aplicables definitivos están sujetos a la evaluación formal, aprobación de riesgo y condiciones finales del analista de la entidad financiera elegida al momento del desembolso.';
+
+// Estilos inline reutilizables
+const S = {
+  page:      'font-family:Arial,sans-serif;color:#1a2332;padding:28px 32px;max-width:780px;background:#fff;',
+  header:    'display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0d2341;padding-bottom:12px;margin-bottom:18px;',
+  logoName:  'font-size:22px;font-weight:700;color:#0d2341;',
+  logoSpan:  'color:#c9a84c;',
+  logoSub:   'font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#6b7a8d;margin-top:2px;',
+  metaBox:   'text-align:right;font-size:11px;color:#6b7a8d;',
+  secTitle:  'font-size:13px;font-weight:700;color:#0d2341;border-bottom:1px solid #e0e5ee;padding-bottom:4px;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.06em;',
+  row:       'display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f2f5;font-size:11px;',
+  rowLabel:  'color:#4a5568;',
+  rowVal:    'font-weight:700;color:#0d2341;font-variant-numeric:tabular-nums;',
+  hlNavy:    'background:#0d2341;color:#fff;border-radius:6px;padding:12px 16px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;',
+  hlGold:    'background:#c9a84c;color:#0d2341;border-radius:6px;padding:12px 16px;margin:6px 0;display:flex;justify-content:space-between;align-items:center;',
+  hlLabel:   'font-size:9px;letter-spacing:.08em;text-transform:uppercase;opacity:.75;',
+  hlVal:     'font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;',
+  tbl:       'width:100%;border-collapse:collapse;font-size:9.5px;margin-top:6px;',
+  th:        'background:#0d2341;color:#fff;padding:7px 5px;text-align:right;font-size:9px;letter-spacing:.04em;',
+  thC:       'background:#0d2341;color:#fff;padding:7px 5px;text-align:center;font-size:9px;letter-spacing:.04em;',
+  td:        'padding:5px;text-align:right;border-bottom:1px solid #eef0f5;font-variant-numeric:tabular-nums;',
+  tdC:       'padding:5px;text-align:center;font-weight:700;color:#0d2341;border-bottom:1px solid #eef0f5;',
+  tdAlt:     'padding:5px;text-align:right;border-bottom:1px solid #eef0f5;font-variant-numeric:tabular-nums;background:#f7f9fc;',
+  tdCAlt:    'padding:5px;text-align:center;font-weight:700;color:#0d2341;border-bottom:1px solid #eef0f5;background:#f7f9fc;',
+  disc:      'font-size:8px;color:#9aa6b8;line-height:1.55;margin-top:22px;padding-top:10px;border-top:1px solid #e2e7ef;',
+  divider:   'border:0;border-top:2px dashed #c9a84c;margin:16px 0;',
+};
+
+function _pdfHeader(tipo) {
+  return `<div style="${S.header}">
+    <div>
+      <div style="${S.logoName}">PRIME <span style="${S.logoSpan}">Grupo Inmobiliario</span></div>
+      <div style="${S.logoSub}">Asesor Financiero · Simulación Interna</div>
+    </div>
+    <div style="${S.metaBox}">
+      <div>${todayStr()}</div>
+      <div style="font-weight:700;color:#0d2341;margin-top:3px;font-size:12px;">${tipo}</div>
+    </div>
+  </div>`;
+}
+
+function _pdfRow(label, val) {
+  return `<div style="${S.row}"><span style="${S.rowLabel}">${label}</span><span style="${S.rowVal}">${val}</span></div>`;
+}
+
+function _pdfHL(label, val, gold = false) {
+  return `<div style="${gold ? S.hlGold : S.hlNavy}">
+    <div style="${S.hlLabel}">${label}</div>
+    <div style="${S.hlVal}">${val}</div>
+  </div>`;
+}
+
+function _buildPdfAndDownload(htmlContent, filename) {
+  // Crear wrapper temporal FUERA del DOM visible
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:210mm;background:#fff;';
+  wrapper.innerHTML = `<div style="${S.page}">${htmlContent}<p style="${S.disc}">${DISCLAIMER}</p></div>`;
+  document.body.appendChild(wrapper);
+
+  const opt = {
+    margin:      [8, 8, 8, 8],
+    filename,
+    image:       { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff', windowWidth: 794 },
+    jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:   { mode: ['css', 'legacy'], avoid: 'tr' }
+  };
+
+  html2pdf().set(opt).from(wrapper).outputPdf('blob').then(blob => {
+    document.body.removeChild(wrapper);
+    const url = URL.createObjectURL(blob);
+    const a   = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 6000);
+  });
+}
+
+function descargarPDF(tipo) {
+  const filename = `PRIME_Simulacion_${tipo}_${new Date().toISOString().slice(0,10)}.pdf`;
+  let html = '';
+
+  /* ─────────────── HIPOTECARIO ─────────────── */
+  if (tipo === 'hipotecario') {
+    const d    = r1ResData;
+    const rows = r1CronogData;
+    const pctI = d.precio > 0 ? ((d.mtoInicial / d.precio) * 100).toFixed(1) : 0;
+
+    let tRows = '';
+    rows.forEach((r, i) => {
+      const bg = i % 2 === 1;
+      tRows += `<tr>
+        <td style="${bg ? S.tdCAlt : S.tdC}">${r.mes}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.saldoInicio)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.amort)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.interes)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.segDesg)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.segInm)}</td>
+        <td style="${bg ? S.tdAlt : S.td};font-weight:700;">${fmtN(r.cuotaTotal)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.saldoFin)}</td>
+      </tr>`;
+    });
+
+    html = `
+      ${_pdfHeader('Crédito Hipotecario')}
+      <div style="${S.secTitle}">Resumen Ejecutivo de la Operación</div>
+      ${_pdfRow('Entidad Financiera', d.banco)}
+      ${_pdfRow('Precio de la Propiedad', fmt(d.precio))}
+      ${_pdfRow(`Cuota Inicial (${pctI}%)`, fmt(d.mtoInicial))}
+      ${_pdfRow('Monto Neto del Préstamo', fmt(d.capital))}
+      ${_pdfRow('Plazo', `${d.plazoAnios} años (${d.plazoAnios * 12} meses)`)}
+      ${_pdfRow('TEA', `${d.tea}%`)}
+      ${_pdfRow('Seg. Desgravamen mensual', `${d.pctSegDesg}%`)}
+      ${_pdfRow('Seg. Inmueble mensual', `${d.pctSegInm}%`)}
+      <div style="display:flex;gap:10px;margin:10px 0;">
+        <div style="flex:1;${S.hlNavy.replace('display:flex;justify-content:space-between;align-items:center;','display:block;')}">
+          <div style="${S.hlLabel}">Cuota 1° Mes</div>
+          <div style="${S.hlVal}">${fmt(rows[0]?.cuotaTotal)}</div>
+        </div>
+        <div style="flex:1;${S.hlNavy.replace('display:flex;justify-content:space-between;align-items:center;','display:block;')}">
+          <div style="${S.hlLabel}">Cuota Último Mes</div>
+          <div style="${S.hlVal}">${fmt(rows[rows.length - 1]?.cuotaTotal)}</div>
+        </div>
+      </div>
+      ${_pdfHL('Total Pagado (con Seguros) — Costo Total Absoluto del Crédito', fmt(d.totalPagado), true)}
+
+      <div style="${S.secTitle}">Cronograma de Amortización Mensual</div>
+      <table style="${S.tbl}">
+        <thead><tr>
+          <th style="${S.thC}">Mes</th>
+          <th style="${S.th}">Saldo Inicial</th>
+          <th style="${S.th}">Amortización</th>
+          <th style="${S.th}">Interés</th>
+          <th style="${S.th}">Seg.Desgrav.</th>
+          <th style="${S.th}">Seg.Inm.</th>
+          <th style="${S.th}">Cuota Total</th>
+          <th style="${S.th}">Saldo Final</th>
+        </tr></thead>
+        <tbody>${tRows}</tbody>
+      </table>`;
+  }
+
+  /* ─────────────── CONSUMO ─────────────── */
+  else if (tipo === 'consumo') {
+    const d    = r2ResData;
+    const rows = d.rows || [];
+
+    let tRows = '';
+    rows.forEach((r, i) => {
+      const bg = i % 2 === 1;
+      tRows += `<tr>
+        <td style="${bg ? S.tdCAlt : S.tdC}">${r.mes}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.saldoInicio)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.amort)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.interes)}</td>
+        <td style="${bg ? S.tdAlt : S.td};font-weight:700;">${fmtN(r.cuota)}</td>
+        <td style="${bg ? S.tdAlt : S.td}">${fmtN(r.saldoFin)}</td>
+      </tr>`;
+    });
+
+    html = `
+      ${_pdfHeader('Contado + Crédito Consumo')}
+      <div style="${S.secTitle}">Resumen Ejecutivo de la Operación</div>
+      ${_pdfRow('Entidad Financiera', d.banco)}
+      ${_pdfRow('Precio de la Propiedad', fmt(d.precio))}
+      ${_pdfRow('Efectivo disponible del Comprador', fmt(d.efectivo))}
+      ${_pdfRow('Monto a Financiar (Saldo Faltante)', fmt(d.faltante))}
+      ${_pdfRow('TEA Préstamo de Consumo', `${d.tea}%`)}
+      ${_pdfRow('Plazo', `${d.plazo} meses`)}
+      ${_pdfHL('Cuota Mensual Fija', fmt(d.cuota))}
+      <div style="display:flex;gap:10px;margin:6px 0;">
+        <div style="flex:1;${S.hlGold.replace('display:flex;justify-content:space-between;align-items:center;','display:block;')}">
+          <div style="${S.hlLabel}">Total a Devolver</div>
+          <div style="${S.hlVal}">${fmt(d.total)}</div>
+        </div>
+        <div style="flex:1;background:#f0f4f8;border-radius:6px;padding:12px 16px;">
+          <div style="${S.hlLabel};color:#6b7a8d;">Costo Financiero</div>
+          <div style="font-size:18px;font-weight:700;color:#0d2341;font-variant-numeric:tabular-nums;">${fmt(d.interes)}</div>
+        </div>
+      </div>
+
+      <div style="${S.secTitle}">Cronograma de Amortización (Sistema Francés)</div>
+      <table style="${S.tbl}">
+        <thead><tr>
+          <th style="${S.thC}">Mes</th>
+          <th style="${S.th}">Saldo Inicial</th>
+          <th style="${S.th}">Amortización</th>
+          <th style="${S.th}">Interés</th>
+          <th style="${S.th}">Cuota Fija</th>
+          <th style="${S.th}">Saldo Final</th>
+        </tr></thead>
+        <tbody>${tRows}</tbody>
+      </table>`;
+  }
+
+  /* ─────────────── CONTADO ─────────────── */
+  else if (tipo === 'contado') {
+    const d = r3ResData;
+    html = `
+      ${_pdfHeader('Compra al Contado Puro')}
+      <div style="${S.secTitle}">Datos Generales de la Operación</div>
+      ${_pdfRow('Precio Real de Venta', fmt(d.precioReal))}
+      ${_pdfRow('Monto Declarado en Notaría', fmt(d.mtoNotaria))}
+      ${_pdfRow('Monto fuera de Notaría', fmt(d.fueraNotaria))}
+      ${_pdfRow('Gastos Notariales de Escritura', fmt(d.gastosNot))}
+
+      <div style="${S.secTitle}">📦 Inversión Total del Comprador</div>
+      ${_pdfRow('Precio Real de la Propiedad', fmt(d.precioReal))}
+      ${_pdfRow(`Impuesto de Alcabala (${d.tasaAlcabala}% sobre exceso 10 UIT)`, fmt(d.impAlcabala))}
+      ${_pdfRow('Gastos Notariales de Escritura', fmt(d.gastosNot))}
+      ${_pdfRow('Derechos Registrales SUNARP', fmt(d.sunarp))}
+      ${_pdfHL('TOTAL INVERSIÓN COMPRADOR', fmt(d.totalComprador))}
+
+      <hr style="${S.divider}"/>
+
+      <div style="${S.secTitle}">💵 Neto a Recibir por el Vendedor</div>
+      ${_pdfRow('Precio Real de la Propiedad', fmt(d.precioReal))}
+      ${_pdfRow(`(−) Impuesto a la Renta (${d.tasaRenta}%)`, '− ' + fmt(d.impRenta))}
+      ${d.criCheck ? _pdfRow('(−) CRI / Copia Literal', '− ' + fmt(d.criMonto)) : ''}
+      ${_pdfHL('NETO A RECIBIR POR EL VENDEDOR', fmt(d.netoVendedor), true)}`;
+  }
+
+  _buildPdfAndDownload(html, filename);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildBankGrid('r1-bank-grid', 'r1');
+  buildBankGrid('r2-bank-grid', 'r2');
+});
+</script>
+</body>
+</html>
